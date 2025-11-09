@@ -31,30 +31,45 @@ def connection():
 def create_table():
     conn=connection()
     conn.execute('''
-            Create Table Products(
-                id Integer Primary key,
-                name String Not Null,
-                category String Not Null,
-                Price Integer Not Null,
+            Create Table if not exists Products(
+                id Integer Primary key AutoIncrement,
+                name Text Not Null,
+                category Text Not Null,
+                Price Real Not Null,
                 Stock Integer Not Null,
                 Reorder_level Integer Not Null
             )
         ''')
     conn.execute('''
-            Create Table Suppliers(
-                id Integer Primary key,
-                name String Not Null,
+            Create Table if not exists Suppliers(
+                id Integer Primary key AutoIncrement,
+                name Text Not Null,
                 Contact Integer Not Null,
                 lead_time_days Integer Not Null
             )
         ''')
     conn.execute('''
-            Create Table Sales(
-                id Integer Primary key,
-                Foreign key product_id References products(id),
+            Create Table if not exists Sales(
+                id Integer Primary key AutoIncrement,
+                product_id Integer Not Null,
                 Quantity Integer Not Null,
-                Price Integer Not Null
-                Reorder_level Integer Not Null
+                Price Real Not Null,
+                Reorder_level Integer Not Null,
+                Date Text Not Null,
+                Foreign key (product_id) References Products(id)
             )
         ''')
+    conn.execute('''
+            Create Table if not exists Transactions(
+                id Integer Primary key AutoIncrement,
+                product_id Integer Not Null,
+                sales_id Integer Not Null,
+                Date Text Not Null,
+                Foreign key (product_id) References Products(id),
+                Foreign key (sales_id) References Sales(id)
+            )
+        ''')
+    
+#creating routes for inserting data into tables
+    
 
