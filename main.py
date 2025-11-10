@@ -201,3 +201,168 @@ def get_all_products():
     conn.close()
     return {"transactions": [dict(p) for p in trans]}
 
+#for updating the values in the table Products
+from typing import Optional
+from pydantic import BaseModel
+
+# Product partial update model
+class ProductUpdate(BaseModel):
+    name: Optional[str] = None
+    category: Optional[str] = None
+    price: Optional[float] = None
+    quantity: Optional[int] = None
+    stock: Optional[int] = None
+
+
+# Supplier partial update model
+class SupplierUpdate(BaseModel):
+    name: Optional[str] = None
+    contact: Optional[int] = None
+    lead_time_days: Optional[int] = None
+
+
+# Sales partial update model
+class SalesUpdate(BaseModel):
+    product_id: Optional[int] = None
+    quantity: Optional[int] = None
+    price: Optional[float] = None
+    reorder_level: Optional[int] = None
+    date: Optional[str] = None
+
+
+# Transaction partial update model
+class TransactionUpdate(BaseModel):
+    product_id: Optional[int] = None
+    sales_id: Optional[int] = None
+    date: Optional[str] = None
+
+@app.patch("/products/{product_id}")
+def update_product_partial(product_id: int, updates: ProductUpdate):
+    conn = connection()
+    cursor = conn.cursor()
+
+    # Extract only provided fields
+    fields = []
+    values = []
+    for key, value in updates.dict(exclude_unset=True).items():
+        fields.append(f"{key} = ?")
+        values.append(value)
+
+    if not fields:
+        return {"message": "No fields provided to update."}
+
+    # Build final query dynamically
+    sql_query = f"UPDATE Products SET {', '.join(fields)} WHERE id = ?"
+    values.append(product_id)
+
+    cursor.execute(sql_query, values)
+    conn.commit()
+    conn.close()
+
+    return {"message": f"Product {product_id} updated successfully!"}
+
+#for updating values in table Sales
+@app.patch("/sales/{sale_id}")
+def update_sales_partial(sale_id: int, updates: SalesUpdate):
+    conn = connection()
+    cursor = conn.cursor()
+
+    fields = []
+    values = []
+    for key, value in updates.dict(exclude_unset=True).items():
+        fields.append(f"{key} = ?")
+        values.append(value)
+
+    if not fields:
+        return {"message": "No fields provided to update."}
+
+    sql_query = f"UPDATE Sales SET {', '.join(fields)} WHERE id = ?"
+    values.append(sale_id)
+
+    cursor.execute(sql_query, values)
+    conn.commit()
+    conn.close()
+
+    return {"message": f"Sale record {sale_id} updated successfully!"}
+
+#for updating values in table Suppliers
+@app.patch("/suppliers/{supplier_id}")
+def update_supplier_partial(supplier_id: int, updates: SupplierUpdate):
+    conn = connection()
+    cursor = conn.cursor()
+
+    fields = []
+    values = []
+    for key, value in updates.dict(exclude_unset=True).items():
+        fields.append(f"{key} = ?")
+        values.append(value)
+
+    if not fields:
+        return {"message": "No fields provided to update."}
+
+    sql_query = f"UPDATE Suppliers SET {', '.join(fields)} WHERE id = ?"
+    values.append(supplier_id)
+
+    cursor.execute(sql_query, values)
+    conn.commit()
+    conn.close()
+
+    return {"message": f"Supplier {supplier_id} updated successfully!"}
+
+
+#for updating values in table Transaction
+@app.patch("/transactions/{transaction_id}")
+def update_transaction_partial(transaction_id: int, updates: TransactionUpdate):
+    conn = connection()
+    cursor = conn.cursor()
+
+    fields = []
+    values = []
+    for key, value in updates.dict(exclude_unset=True).items():
+        fields.append(f"{key} = ?")
+        values.append(value)
+
+    if not fields:
+        return {"message": "No fields provided to update."}
+
+    sql_query = f"UPDATE Transactions SET {', '.join(fields)} WHERE id = ?"
+    values.append(transaction_id)
+
+    cursor.execute(sql_query, values)
+    conn.commit()
+    conn.close()
+
+    return {"message": f"Transaction {transaction_id} updated successfully!"}
+
+#for deleting details from the table
+from fastapi import HTTPException
+
+def delete_record(table: str, record_id: int):
+    conn = connection()
+    cursor = conn.cursor()
+
+    cursor.execute(f"DELETE FROM {table} WHERE id = ?", (record_id,))
+    conn.commit()
+
+    if cursor.rowcount == 0:  # means no row was deleted
+        conn.close()
+        raise HTTPException(status_code=404, detail=f"Record with ID {record_id} not found in {table} table.")
+
+    conn.close()
+    return {"message": f"Record with ID {record_id} deleted successfully from {table}."}
+
+@app.delete("/products/{product_id}")
+def delete_product(product_id: int):
+    return delete_record("Products", product_id)
+
+@app.delete("/suppliers/{supplier_id}")
+def delete_supplier(supplier_id: int):
+    return delete_record("Suppliers", supplier_id)
+
+@app.delete("/sales/{sale_id}")
+def delete_sale(sale_id: int):
+    return delete_record("Sales", sale_id)
+
+@app.delete("/transactions/{transaction_id}")
+def delete_transaction(transaction_id: int):
+    return delete_record("Transactions", transaction_id)
