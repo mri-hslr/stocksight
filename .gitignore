@@ -1,3 +1,104 @@
-venv/
+# =========================
+# FASTAPI / PYTHON BACKEND
+# =========================
+
+# Byte-compiled / optimized / DLL files
 __pycache__/
-*.pyc
+*.py[cod]
+*$py.class
+
+# Virtual environment
+venv/
+.env/
+.env.* 
+.venv/
+env/
+venv.bak/
+pip-wheel-metadata/
+
+# SQLite database
+*.db
+*.sqlite3
+
+# PyInstaller
+build/
+dist/
+*.spec
+
+# Logs and temp
+*.log
+*.pid
+*.seed
+*.bak
+*.swp
+tmp/
+temp/
+
+# VSCode and IDE files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# OS-specific
+.DS_Store
+Thumbs.db
+
+
+# =========================
+# REACT / FRONTEND (VITE)
+# =========================
+
+# Dependencies
+node_modules/
+package-lock.json
+
+# Build output
+dist/
+build/
+
+# Local environment
+.env.local
+.env.development.local
+.env.production.local
+.env.test.local
+
+# Cache files
+.vite/
+.cache/
+coverage/
+*.tsbuildinfo
+
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Editor configs
+*.sw?
+*.swo
+*.orig
+
+
+# =========================
+# MISC
+# =========================
+
+# System
+*.tmp
+*.bak
+*.old
+
+# Mac-specific
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Python egg
+*.egg-info/
+.eggs/
+
+# Reports
+reports/
+__pypackages__/

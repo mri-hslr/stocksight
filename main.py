@@ -19,11 +19,24 @@ class Product(BaseModel):
 def add_product(product:Product):
     return{" message": f"{product.name} added costing {product.price} with {product.quantity} quantity"}
     """
-#now integerating database with backend using sqllite3 and fastapi
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI
+app = FastAPI()
+
+# Allow frontend to access the backend
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # (for dev only; later restrict to your frontend URL)
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+#now integerating database with backend using sqllite3 and fastapi
+
 from pydantic import BaseModel;
 import sqlite3 
-app=FastAPI()
+
 #1. creating connection with database
 
 def connection():
