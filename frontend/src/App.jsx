@@ -11,11 +11,12 @@ import Transactions from "./pages/Transactions";
 function App() {
   return (
     <Router>
-      <div className="flex min-h-screen bg-gray-50 text-gray-900">
+      {/* ✅ Black global background + white text */}
+      <div className="flex min-h-screen bg-black text-gray-100">
         <Sidebar />
         <div className="flex-1 flex flex-col">
           <Topbar />
-          <main className="flex-1 p-6 overflow-y-auto">
+          <main className="flex-1 p-6 overflow-y-auto bg-black">
             <Routes>
               <Route path="/" element={<Dashboard />} />
               <Route path="/products" element={<Products />} />

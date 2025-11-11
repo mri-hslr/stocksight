@@ -5,7 +5,13 @@ import { motion } from "framer-motion";
 const Table = ({ data, onEdit, onDelete }) => {
   if (!data?.length)
     return (
-      <div className="text-center py-10 text-gray-500">No records found.</div>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="text-center py-16 text-gray-500 dark:text-gray-400"
+      >
+        No records found.
+      </motion.div>
     );
 
   const headers = Object.keys(data[0]);
@@ -15,50 +21,60 @@ const Table = ({ data, onEdit, onDelete }) => {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
-      className="overflow-x-auto border rounded-xl bg-white shadow-sm"
+      className="overflow-hidden border border-gray-200 dark:border-gray-800 rounded-2xl bg-white dark:bg-gray-900 shadow-sm"
     >
       <table className="w-full border-collapse">
-        <thead className="bg-gray-100">
+        {/* ===== Table Header ===== */}
+        <thead className="bg-gray-50 dark:bg-gray-800/50 text-gray-600 dark:text-gray-400 text-sm uppercase tracking-wide border-b border-gray-200 dark:border-gray-700">
           <tr>
             {headers.map((h) => (
               <th
                 key={h}
-                className="text-left px-4 py-2 text-sm font-semibold text-gray-600 uppercase"
+                className="px-5 py-3 text-left font-semibold first:rounded-tl-2xl last:rounded-tr-2xl"
               >
-                {h}
+                {h.replace(/_/g, " ")}
               </th>
             ))}
-            <th className="px-4 py-2 text-sm font-semibold text-gray-600">
-              Actions
-            </th>
+            <th className="px-5 py-3 text-left font-semibold">Actions</th>
           </tr>
         </thead>
+
+        {/* ===== Table Body ===== */}
         <tbody>
-          {data.map((row) => (
-            <tr
-              key={row.id}
-              className="border-t hover:bg-gray-50 transition-colors"
+          {data.map((row, rowIndex) => (
+            <motion.tr
+              key={row.id || rowIndex}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: rowIndex * 0.05 }}
+              className="border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800/40 transition-all"
             >
               {headers.map((key) => (
-                <td key={key} className="px-4 py-2 text-sm text-gray-800">
+                <td
+                  key={key}
+                  className="px-5 py-3 text-sm text-gray-800 dark:text-gray-200 whitespace-nowrap max-w-xs truncate"
+                  title={String(row[key])}
+                >
                   {String(row[key])}
                 </td>
               ))}
-              <td className="px-4 py-2 flex gap-2">
+              <td className="px-5 py-3 flex items-center gap-2">
                 <button
                   onClick={() => onEdit(row)}
-                  className="p-2 bg-gray-100 hover:bg-gray-200 rounded-lg"
+                  className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                  title="Edit"
                 >
-                  <Edit2 className="w-4 h-4 text-gray-700" />
+                  <Edit2 className="w-4 h-4 text-gray-700 dark:text-gray-300" />
                 </button>
                 <button
                   onClick={() => onDelete(row.id)}
-                  className="p-2 bg-red-100 hover:bg-red-200 rounded-lg"
+                  className="p-2 rounded-lg bg-red-100/60 hover:bg-red-200 dark:bg-red-900/40 dark:hover:bg-red-800/60 transition-colors"
+                  title="Delete"
                 >
-                  <Trash2 className="w-4 h-4 text-red-600" />
+                  <Trash2 className="w-4 h-4 text-red-600 dark:text-red-400" />
                 </button>
               </td>
-            </tr>
+            </motion.tr>
           ))}
         </tbody>
       </table>

@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import Table from "../components/Table";
 import ModalForm from "../components/ModalForm";
 import { fetchData, createItem, updateItem, deleteItem } from "../api/api";
+import { motion } from "framer-motion";
+import { PlusCircle } from "lucide-react";
 
 const Sales = () => {
   const [data, setData] = useState([]);
@@ -53,23 +55,42 @@ const Sales = () => {
   }, []);
 
   return (
-    <div>
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-semibold">Sales</h2>
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
+      className="p-6 bg-gray-50 dark:bg-gray-950 min-h-screen rounded-2xl"
+    >
+      {/* ===== Page Header ===== */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-3">
+        <div>
+          <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
+            Sales
+          </h2>
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            Track and manage all your sales records efficiently.
+          </p>
+        </div>
+
         <button
           onClick={() => {
             setEditMode(false);
             setFormData({});
             setShowModal(true);
           }}
-          className="bg-gray-900 text-white px-4 py-2 rounded-lg hover:bg-gray-700"
+          className="flex items-center gap-2 bg-green-600 text-white px-4 py-2.5 rounded-xl hover:bg-green-700 active:scale-[0.98] transition-all shadow-sm"
         >
+          <PlusCircle className="w-4 h-4" />
           Add Sale
         </button>
       </div>
 
-      <Table data={data} onEdit={handleEdit} onDelete={handleDelete} />
+      {/* ===== Table Section ===== */}
+      <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl shadow-sm p-4 transition-all">
+        <Table data={data} onEdit={handleEdit} onDelete={handleDelete} />
+      </div>
 
+      {/* ===== Modal ===== */}
       {showModal && (
         <ModalForm
           title={editMode ? "Edit Sale" : "Add Sale"}
@@ -80,7 +101,7 @@ const Sales = () => {
           onClose={() => setShowModal(false)}
         />
       )}
-    </div>
+    </motion.div>
   );
 };
 
